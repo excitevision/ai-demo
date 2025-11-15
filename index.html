@@ -20,40 +20,6 @@
     <input type="text" id="input" placeholder="输入问题..." onkeypress="if(event.key==='Enter') sendMessage();">
     <button onclick="sendMessage()">发送</button>
 
-    <script>
-        const API_URL = 'https://your-ngrok.ngrok-free.app/api/predict';  // 替换为你的ngrok/ISP API
-        // 或用ISP端点：'https://your-isp-domain.com/api/ai'（如果ISP有后端）
-
-        let isDark = false;
-        function toggleTheme() {
-            isDark = !isDark;
-            document.body.classList.toggle('dark', isDark);
-        }
-
-        const chatDiv = document.getElementById('chat');
-        function addMessage(sender, msg) {
-            chatDiv.innerHTML += `<p><strong>${sender}:</strong> ${msg}</p>`;
-            chatDiv.scrollTop = chatDiv.scrollHeight;
-        }
-
-        async function sendMessage() {
-            const message = document.getElementById('input').value.trim();
-            if (!message) return;
-            addMessage('你', message);
-            document.getElementById('input').value = '';
-
-            try {
-                const response = await fetch(API_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ data: [message] })
-                });
-                const data = await response.json();
-                addMessage('AI', data.data[0]);
-            } catch (error) {
-                addMessage('错误', error.message);
-            }
-        }
-    </script>
+   
 </body>
 </html>
