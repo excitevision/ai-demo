@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI聊天Demo - GitHub Pages</title>
+    <style>
+        body { font-family: Arial; max-width: 600px; margin: 0 auto; padding: 20px; }
+        #chat { border: 1px solid #ccc; height: 400px; overflow-y: scroll; padding: 10px; background: #f9f9f9; }
+        #input { width: 80%; padding: 10px; }
+        button { padding: 10px; background: #007bff; color: white; border: none; cursor: pointer; }
+        .dark { background: #333; color: white; }
+        .dark #chat { background: #444; }
+    </style>
+</head>
+<body>
+    <h1>GitHub Pages AI Demo</h1>
+    <button onclick="toggleTheme()">切换暗黑模式</button>
+    <div id="chat"></div>
+    <input type="text" id="input" placeholder="输入问题..." onkeypress="if(event.key==='Enter') sendMessage();">
+    <button onclick="sendMessage()">发送</button>
+
+    <script>
+        const API_URL = 'https://your-ngrok.ngrok-free.app/api/predict';  // 替换为你的ngrok/ISP API
+        // 或用ISP端点：'https://your-isp-domain.com/api/ai'（如果ISP有后端）
+
+        let isDark = false;
+        function toggleTheme() {
+            isDark = !isDark;
+            document.body.classList.toggle('dark', isDark);
+        }
+
+        const chatDiv = document.getElementById('chat');
+        function addMessage(sender, msg) {
+            chatDiv.innerHTML += `<p><strong>${sender}:</strong> ${msg}</p>`;
+            chatDiv.scrollTop = chatDiv.scrollHeight;
+        }
+
+        async function sendMessage() {
+            const message = document.getElementById('input').value.trim();
+            if (!message) return;
+            addMessage('你', message);
+            document.getElementById('input').value = '';
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ data: [message] })
+                });
+                const data = await response.json();
+                addMessage('AI', data.data[0]);
+            } catch (error) {
+                addMessage('错误', error.message);
+            }
+        }
+    </script>
+</body>
+</html>
